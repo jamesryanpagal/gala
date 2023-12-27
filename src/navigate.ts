@@ -16,7 +16,7 @@ type NavProps = {
 };
 
 export const linking: LinkingOptions<RootParamList> = {
-  prefixes: ["bakasyonista://", "https://bakasyonista"],
+  prefixes: ["gala://", "https://gala"],
   config: {
     screens: {
       Welcome: "welcome",
