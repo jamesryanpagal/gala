@@ -6,15 +6,15 @@ import I18n from "../../utils/translation/translation";
 import Icon from "../../components/Icon";
 import { showPassword, hidePassword } from "../../assets";
 import { Formik } from "formik";
-import { ButtonReg } from "../../components/Button";
+import { Button } from "../../components/Button";
 import { TextReg } from "../../components/Text";
 import { form } from "../../styles/components-styles/components.style";
-import { useLogin } from "../../utils/hooks/queries/useLoginSignup.hooks";
+import { useLogin } from "../../utils/hooks/queries/useOnBoarding";
 import KeyboardView from "../../components/KeyboardView";
 import ContainerClickOutSide from "../../components/ContainerClickOutSide";
-import Loading from "../../components/Loading";
 import { LoginHeader } from "../../components/NavHeader";
 import InvalidMessage from "../../components/InvalidMessage";
+import Loader from "../../components/Loader";
 
 export type LoginFormValues = {
   email: string;
@@ -53,48 +53,49 @@ const Login = () => {
   };
 
   return (
-    <SafeAreaContainer>
-      <LoginHeader historyFallBack="Welcome" />
-      <View style={invalidContainer}>{isInvalid}</View>
-      <KeyboardView>
-        <Formik initialValues={initialValues} onSubmit={onSubmit}>
-          {({ handleSubmit, handleChange, values }) => {
-            return (
-              <View style={container}>
-                <ContainerClickOutSide>
-                  <Input
-                    label={I18n.t("email")}
-                    onChangeText={handleChange("email")}
-                    value={values.email}
-                  />
-                  <Input
-                    label={I18n.t("password")}
-                    secureTextEntry={!isShowPassword}
-                    onChangeText={handleChange("password")}
-                    value={values.password}
-                    suffix={
-                      <TouchableOpacity
-                        onPress={() => setIsShowPassword(prev => !prev)}>
-                        <Icon
-                          source={isShowPassword ? showPassword : hidePassword}
-                        />
-                      </TouchableOpacity>
-                    }
-                  />
-                </ContainerClickOutSide>
-                <ButtonReg onPress={handleSubmit} disabled={isLoading}>
-                  {isLoading ? (
-                    <Loading />
-                  ) : (
+    <>
+      <SafeAreaContainer>
+        <LoginHeader historyFallBack="Welcome" />
+        <View style={invalidContainer}>{isInvalid}</View>
+        <KeyboardView>
+          <Formik initialValues={initialValues} onSubmit={onSubmit}>
+            {({ handleSubmit, handleChange, values }) => {
+              return (
+                <View style={container}>
+                  <ContainerClickOutSide>
+                    <Input
+                      label={I18n.t("email")}
+                      onChangeText={handleChange("email")}
+                      value={values.email}
+                    />
+                    <Input
+                      label={I18n.t("password")}
+                      secureTextEntry={!isShowPassword}
+                      onChangeText={handleChange("password")}
+                      value={values.password}
+                      suffix={
+                        <TouchableOpacity
+                          onPress={() => setIsShowPassword(prev => !prev)}>
+                          <Icon
+                            source={
+                              isShowPassword ? showPassword : hidePassword
+                            }
+                          />
+                        </TouchableOpacity>
+                      }
+                    />
+                  </ContainerClickOutSide>
+                  <Button onPress={handleSubmit} disabled={isLoading}>
                     <TextReg title={I18n.t("loginLbl")} light />
-                  )}
-                </ButtonReg>
-              </View>
-            );
-          }}
-        </Formik>
-      </KeyboardView>
-    </SafeAreaContainer>
+                  </Button>
+                </View>
+              );
+            }}
+          </Formik>
+        </KeyboardView>
+      </SafeAreaContainer>
+      <Loader open={isLoading} />
+    </>
   );
 };
 

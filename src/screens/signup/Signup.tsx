@@ -7,7 +7,7 @@ import { TextL, TextReg } from "../../components/Text";
 import { form } from "../../styles/components-styles/components.style";
 import Input from "../../components/Input";
 import I18n from "../../utils/translation/translation";
-import { ButtonReg } from "../../components/Button";
+import { Button } from "../../components/Button";
 import KeyboardView from "../../components/KeyboardView";
 import ContainerClickOutSide from "../../components/ContainerClickOutSide";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -142,9 +142,9 @@ const FullnameForm = ({ details, setDetails, setStep }: FormFieldProps) => {
                   />
                 </ContainerClickOutSide>
               </Container>
-              <ButtonReg disabled={!isComplete} onPress={handleSubmit}>
+              <Button disabled={!isComplete} onPress={handleSubmit}>
                 <TextReg title={I18n.t("nextLbl")} light />
-              </ButtonReg>
+              </Button>
             </View>
           </>
         );
@@ -222,12 +222,12 @@ const BirthdateGenderForm = ({
                 </ContainerClickOutSide>
               </Container>
               <View style={actionContainer}>
-                <ButtonReg bordered flex onPress={() => setStep(STEPS.STEP1)}>
+                <Button bordered flex onPress={() => setStep(STEPS.STEP1)}>
                   <TextReg title={I18n.t("previousLbl")} />
-                </ButtonReg>
-                <ButtonReg flex onPress={handleSubmit}>
+                </Button>
+                <Button flex onPress={handleSubmit}>
                   <TextReg title={I18n.t("nextLbl")} light />
-                </ButtonReg>
+                </Button>
               </View>
             </View>
           </>
@@ -303,12 +303,12 @@ const AddressContactInformationForm = ({
                 </ContainerClickOutSide>
               </Container>
               <View style={actionContainer}>
-                <ButtonReg bordered flex onPress={() => setStep(STEPS.STEP2)}>
+                <Button bordered flex onPress={() => setStep(STEPS.STEP2)}>
                   <TextReg title={I18n.t("previousLbl")} />
-                </ButtonReg>
-                <ButtonReg flex onPress={handleSubmit}>
+                </Button>
+                <Button flex onPress={handleSubmit}>
                   <TextReg title={I18n.t("nextLbl")} light />
-                </ButtonReg>
+                </Button>
               </View>
             </View>
           </>
@@ -433,12 +433,12 @@ const UserDetailsForm = ({ details, setDetails, setStep }: FormFieldProps) => {
               </Container>
 
               <View style={[actionContainer, { marginTop: 10 }]}>
-                <ButtonReg bordered flex onPress={() => setStep(STEPS.STEP3)}>
+                <Button bordered flex onPress={() => setStep(STEPS.STEP3)}>
                   <TextReg title={I18n.t("previousLbl")} />
-                </ButtonReg>
-                <ButtonReg flex onPress={handleSubmit}>
+                </Button>
+                <Button flex onPress={handleSubmit}>
                   <TextReg title={I18n.t("signupLbl")} light />
-                </ButtonReg>
+                </Button>
               </View>
             </View>
           </>

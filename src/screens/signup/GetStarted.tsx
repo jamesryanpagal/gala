@@ -5,7 +5,7 @@ import { SignupGetStartedHeader } from "../../components/NavHeader";
 import { signup } from "../../styles/login-signup-styles/loginsignup.style";
 import { back, navigate } from "../../navigate";
 import I18n from "../../utils/translation/translation";
-import { ButtonReg } from "../../components/Button";
+import { Button } from "../../components/Button";
 import { TextReg } from "../../components/Text";
 import Image from "../../components/Image";
 import { joinJourneyImage } from "../../assets";
@@ -19,12 +19,12 @@ const GetStarted = () => {
         <Image source={joinJourneyImage} />
       </View>
       <View style={getStartedFooterContainer}>
-        <ButtonReg onPress={() => navigate({ screen: "Signup" })}>
+        <Button onPress={() => navigate({ screen: "Signup" })}>
           <TextReg title={I18n.t("signupGetStartedLbl")} light />
-        </ButtonReg>
-        <ButtonReg link onPress={() => back("Welcome")}>
+        </Button>
+        <Button link onPress={() => back("Welcome")}>
           <TextReg title={I18n.t("signupGetStartedBacktoLogin")} />
-        </ButtonReg>
+        </Button>
       </View>
     </SafeAreaContainer>
   );

@@ -11,7 +11,7 @@ import {
   googleSSOicon,
   welcomeImg,
 } from "../../assets";
-import { ButtonReg } from "../../components/Button";
+import { Button } from "../../components/Button";
 import { navigate } from "../../navigate";
 import Image from "../../components/Image";
 import Icon from "../../components/Icon";
@@ -74,12 +74,12 @@ const Footer = () => {
   };
   return (
     <View style={footer}>
-      <ButtonReg onPress={onLogin}>
+      <Button onPress={onLogin}>
         <TextReg title={I18n.t("loginLbl")} light />
-      </ButtonReg>
-      <ButtonReg bordered onPress={onSignup}>
+      </Button>
+      <Button bordered onPress={onSignup}>
         <TextReg title={I18n.t("createAccountLbl")} />
-      </ButtonReg>
+      </Button>
       <FooterSeparator />
       <FooterSSO />
     </View>

@@ -3,6 +3,7 @@ export const COLORS = {
   topaz: "#07BEB8",
   eggShellBlue: "#C4FFF9",
   heavyMetal: "#272E2D",
+  heavyMetal50: "#272E2D50",
   cottonSeed: "#BCBCBC",
   carbonGrey: "#5C5C5C",
   lavaRed: "#DD2626",

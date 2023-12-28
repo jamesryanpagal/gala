@@ -7,6 +7,8 @@ import googleSSOicon from "./icons/welcome/google-btn.png";
 
 // header
 import headerBackButton from "./icons/header/header-back-icon.png";
+import headerCloseIconWhite from "./icons/header/header-close-white.png";
+import headerCloseIconBlack from "./icons/header/header-close-black.png";
 
 // inputs
 import showPassword from "./icons/inputs/show-password-icon.png";
@@ -23,6 +25,8 @@ export {
   fbSSOicon,
   googleSSOicon,
   headerBackButton,
+  headerCloseIconWhite,
+  headerCloseIconBlack,
   showPassword,
   hidePassword,
   invalidIcon,

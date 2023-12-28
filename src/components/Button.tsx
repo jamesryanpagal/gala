@@ -4,10 +4,12 @@ import { button } from "../styles/components-styles/components.style";
 
 export type ButtonTypeProps = {
   bordered?: boolean;
+  rounded?: boolean;
   link?: boolean;
   bgColor?: string;
   flex?: boolean;
   disabled?: boolean;
+  size?: "sm" | "md" | "lg";
 };
 
 type ButtonProps = PropsWithChildren &
@@ -15,7 +17,7 @@ type ButtonProps = PropsWithChildren &
     onPress?: () => void;
   };
 
-export const ButtonReg = ({
+export const Button = ({
   children,
   onPress,
   disabled,

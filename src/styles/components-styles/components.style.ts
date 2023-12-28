@@ -10,9 +10,9 @@ import { IconSizeProps } from "../../components/Icon";
 import { ButtonTypeProps } from "../../components/Button";
 import { TextScaleStyleProps, TextTypeProps } from "../../components/Text";
 import { SafeAreaProps } from "../../components/SafeAreaContainer";
-import { LoadingProps } from "../../components/Loading";
 import { InputProps } from "../../components/Input";
 import { FONTS } from "../../utils/constants/fonts";
+import { ModalStyleProps } from "../../components/Modal";
 
 export const safeArea = ({ bg, noPadding }: SafeAreaProps) =>
   StyleSheet.create({
@@ -71,29 +71,48 @@ export const text = ({
 
 export const button = ({
   bordered,
+  rounded,
   link,
   flex,
   bgColor = COLORS.pastelOrange,
   disabled,
-}: ButtonTypeProps) =>
-  StyleSheet.create({
+  size,
+}: ButtonTypeProps) => {
+  const sm = size === "sm";
+  const md = size === "md";
+  const lg = size === "lg";
+
+  const btnSize = sm
+    ? COMPONENT.defaultSm
+    : md
+    ? COMPONENT.defaultMd
+    : lg
+    ? COMPONENT.defaultLg
+    : COMPONENT.defaultHeight;
+
+  return StyleSheet.create({
     btn: {
       justifyContent: "center",
       alignItems: "center",
       borderRadius: 100,
       ...(flex ? { flex: 1 } : { width: "100%" }),
+      ...(rounded && {
+        height: btnSize,
+        width: btnSize,
+      }),
       ...(bordered
         ? {
             borderWidth: 1,
             borderColor: COLORS.cottonSeed,
-            height: 50,
+            height: btnSize,
           }
         : link
         ? {}
-        : { backgroundColor: bgColor, height: 50 }),
-      ...(disabled && { opacity: 0.4, height: 50 }),
+        : { backgroundColor: bgColor, height: btnSize }),
+      ...(disabled && { opacity: 0.4, height: btnSize }),
     },
   });
+};
 
 export const navHeader = StyleSheet.create({
   leftBtnContainer: {
@@ -160,7 +179,7 @@ export const input = ({ error }: Partial<InputProps>) =>
       borderColor: error ? COLORS.lavaRed : COLORS.cottonSeed,
       borderRadius: 5,
       flexDirection: "row",
-      height: COMPONENT.inputHeight,
+      height: COMPONENT.defaultHeight,
       overflow: "hidden",
     },
     iconContainer: {
@@ -193,22 +212,44 @@ export const form = StyleSheet.create({
   },
 });
 
-export const loading = ({ dark }: LoadingProps) =>
+export const modal = ({ dark, transparent }: ModalStyleProps) =>
   StyleSheet.create({
     container: {
-      height: 50,
-      flexDirection: "row",
-      columnGap: 5,
+      position: "absolute",
+      height: "100%",
+      width: "100%",
+      backgroundColor: COLORS.heavyMetal50,
       justifyContent: "center",
       alignItems: "center",
     },
-    loader: {
-      height: 10,
-      width: 10,
-      borderRadius: 50,
-      backgroundColor: dark ? COLORS.carbonGrey : COLORS.white,
+    contentContainer: {
+      backgroundColor: dark
+        ? COLORS.heavyMetal
+        : transparent
+        ? COLORS.transparent
+        : COLORS.paleGrey,
+      borderRadius: COMPONENT.defaultRaduis,
+      overflow: "hidden",
+      padding: SPACING.defaultPadding,
+    },
+    contentHeader: {
+      flexDirection: "row",
+      justifyContent: "flex-end",
     },
   });
+
+export const loader = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    columnGap: 10,
+  },
+  line: {
+    height: 20,
+    width: 20,
+    borderRadius: 100,
+    backgroundColor: COLORS.paleGrey,
+  },
+});
 
 export const clickOutSide = ({ ...rest }: ViewStyle) =>
   StyleSheet.create({
@@ -222,8 +263,8 @@ export const invalidMessage = StyleSheet.create({
   container: {
     borderWidth: 1,
     borderColor: COLORS.lavaRed,
-    height: COMPONENT.inputHeight,
-    borderRadius: COMPONENT.inputRadius,
+    height: COMPONENT.defaultHeight,
+    borderRadius: COMPONENT.defaultRaduis,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: COLORS.dustStorm,

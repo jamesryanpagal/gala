@@ -24,6 +24,10 @@ export const SPACING = {
 };
 
 export const COMPONENT = {
-  inputHeight: 50,
-  inputRadius: 5,
+  defaultHeight: 50,
+  defaultRaduis: 5,
+  buttonRoundedWidth: 50,
+  defaultSm: 30,
+  defaultMd: 35,
+  defaultLg: 55,
 };

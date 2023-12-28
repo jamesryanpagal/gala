@@ -47,5 +47,7 @@
   "passwordContainingSpecialChar": "Password must have at least 1 special character",
   "passwordMinumunLengthLbl": "Password must be at least %{count} characters",
 
-  "requiredFieldLbl": "Required field"
+  "requiredFieldLbl": "Required field",
+
+  "errNetworkErrorLbl": "Oops! Something went wrong"
 }

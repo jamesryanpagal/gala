@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { STORAGE_KEY } from "../constants/storagekey";
+import I18n from "../translation/translation";
 
 export const authRequest = axios.create({
   baseURL: "http://localhost:5555",
@@ -35,10 +36,18 @@ export const apiRequest =
         response,
       };
     } catch (err: any) {
-      return {
-        statusCode: err.response.data.statusCode,
-        message: err.response.data.message,
-        response: null,
-      };
+      if (err.response) {
+        return {
+          statusCode: err.response.data.statusCode,
+          message: err.response.data.message,
+          response: null,
+        };
+      } else {
+        return {
+          statusCode: 500,
+          message: I18n.t("errNetworkErrorLbl"),
+          response: null,
+        };
+      }
     }
   };
