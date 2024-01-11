@@ -24,9 +24,14 @@
   "lastNameLbl": "Last name",
   "birthdateLbl": "Birthdate",
   "genderLbl": "Gender",
-  "addressLbl": "Address",
+  "regionLbl": "Region",
+  "provinceLbl": "Province",
+  "citiesOrMunicipalitiesLbl": "City or Municipality",
+  "addressLoadMoreLbl": "Load more",
   "contactNumLbl": "Contact #",
+  "contactNumPrefixLbl": "+63",
   "usernameLbl": "Username",
+  "usernameMaxLengthLbl": "Username must not exceed to %{count} characters.",
   "emailLbl": "Email",
   "passwordLbl": "Password",
   "confirmPasswordLbl": "Confirm password",
@@ -41,13 +46,20 @@
   "invalidContactNumLbl": "Invalid contact #",
   "invalidUsernameLbl": "Invalid username",
   "invalidEmailLbl": "Invalid email",
-  "passwordContainingSmallChar": "Password must have at least 1 small letter",
-  "passwordContainingCapitalChar": "Password must have at least 1 capital letter",
-  "passwordContainingNumber": "Password must have at least 1 number",
-  "passwordContainingSpecialChar": "Password must have at least 1 special character",
-  "passwordMinumunLengthLbl": "Password must be at least %{count} characters",
+  "passwordContainingSmallChar": "Must contain small character / s",
+  "passwordContainingCapitalChar": "Must contain capital character / s",
+  "passwordContainingNumber": "Must contain numeric character / s",
+  "passwordContainingSpecialChar": "Must contain special character / s",
+  "passwordMinumunLengthLbl": "Must contain minimum of %{count} characters",
 
   "requiredFieldLbl": "Required field",
 
-  "errNetworkErrorLbl": "Oops! Something went wrong"
+  "errNetworkErrorLbl": "Oops! Something went wrong",
+  "errInvalidDropdownValueLbl": "Invalid drop down value",
+
+  "genderMLbl": "Male",
+  "genderFLbl": "Female",
+
+  "dotLbl": " • ",
+  "emptyListLbl": "No data available."
 }

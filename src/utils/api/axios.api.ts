@@ -1,27 +1,32 @@
-import axios, { AxiosResponse } from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { STORAGE_KEY } from "../constants/storagekey";
+import { AxiosResponse } from "axios";
 import I18n from "../translation/translation";
 
-export const authRequest = axios.create({
-  baseURL: "http://localhost:5555",
-  headers: {
-    Authorization: `Bearer ${AsyncStorage.getItem(STORAGE_KEY.TOKEN)}`,
-  },
-});
+export type PaginateResponse<R> = {};
 
-export const unAuthRequest = axios.create({
-  baseURL: "http://localhost:5555",
-});
-
-export type Response<T> = {
+export type ResponseStatus = {
   message: string;
   statusCode: number;
-  response: T | null;
+};
+
+export type Response<R> = ResponseStatus & {
+  response: R | null;
+};
+
+export type ResponseInfinite<R> = Response<R> & {
+  pageTotal: number;
 };
 
 export type ApiRequest<T, R> = (req?: T) => Promise<AxiosResponse<R>>;
 export type ApiResponse<R> = Promise<Response<R>>;
+export type ApiResponseInfinite<R> = Promise<ResponseInfinite<R>>;
+
+/**
+ * @description accepts 2 paramaters. 1: function for the actual get or post request. 2: for identifying wether it is in the form of rest api of not.
+ * @param callback_request actual function for get and post request.
+ * @param isRest use to indetify whether the callback_request is in the form of rest or not.
+ * @generic ( apiRequest<T, ...> ) a generic type of data parameter that will be pass to actual request.
+ * @generic ( apiRequest<..., R> ) a generic type for actual request response.
+ */
 
 export const apiRequest =
   <T, R>(req: ApiRequest<T, R>) =>
@@ -50,4 +55,10 @@ export const apiRequest =
         };
       }
     }
+  };
+
+export const apiPaginatedRequest =
+  <T, R>(req: ApiRequest<T, R>) =>
+  async (params?: T): ApiResponseInfinite<R> => {
+    return (await req(params)).data as ResponseInfinite<R>;
   };

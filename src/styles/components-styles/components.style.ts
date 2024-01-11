@@ -13,6 +13,7 @@ import { SafeAreaProps } from "../../components/SafeAreaContainer";
 import { InputProps } from "../../components/Input";
 import { FONTS } from "../../utils/constants/fonts";
 import { ModalStyleProps } from "../../components/Modal";
+import { LoaderIndicatorProps } from "../../components/Loader";
 
 export const safeArea = ({ bg, noPadding }: SafeAreaProps) =>
   StyleSheet.create({
@@ -33,13 +34,20 @@ export const text = ({
   color,
   centered,
   light,
+  success,
   danger,
   visibility,
   fontSize,
 }: TextTypeProps & TextScaleStyleProps) => {
   const textColor =
     (!!color && color) ||
-    (light ? COLORS.white : danger ? COLORS.lavaRed : COLORS.fireFly);
+    (light
+      ? COLORS.white
+      : danger
+      ? COLORS.lavaRed
+      : success
+      ? COLORS.malachite
+      : COLORS.fireFly);
 
   return StyleSheet.create({
     r: {
@@ -73,6 +81,7 @@ export const button = ({
   bordered,
   rounded,
   link,
+  reg,
   flex,
   bgColor = COLORS.pastelOrange,
   disabled,
@@ -94,21 +103,27 @@ export const button = ({
     btn: {
       justifyContent: "center",
       alignItems: "center",
-      borderRadius: 100,
       ...(flex ? { flex: 1 } : { width: "100%" }),
       ...(rounded && {
         height: btnSize,
         width: btnSize,
       }),
-      ...(bordered
+      ...(reg
+        ? {
+            height: btnSize,
+            borderRadius: 5,
+            backgroundColor: bgColor,
+          }
+        : bordered
         ? {
             borderWidth: 1,
             borderColor: COLORS.cottonSeed,
             height: btnSize,
+            borderRadius: 100,
           }
         : link
         ? {}
-        : { backgroundColor: bgColor, height: btnSize }),
+        : { backgroundColor: bgColor, height: btnSize, borderRadius: 100 }),
       ...(disabled && { opacity: 0.4, height: btnSize }),
     },
   });
@@ -166,12 +181,15 @@ export const image = ({
   });
 };
 
-export const input = ({ error }: Partial<InputProps>) =>
+export const input = ({ error, disabled }: Partial<InputProps>) =>
   StyleSheet.create({
     container: { marginBottom: 10 },
     labelContainer: {
       flexDirection: "row",
       columnGap: 5,
+    },
+    rulesContainer: {
+      padding: SPACING.defaultPadding,
     },
     invalidContainer: {},
     fieldContainer: {
@@ -181,6 +199,7 @@ export const input = ({ error }: Partial<InputProps>) =>
       flexDirection: "row",
       height: COMPONENT.defaultHeight,
       overflow: "hidden",
+      ...(disabled && { backgroundColor: COLORS.mercury, opacity: 0.5 }),
     },
     iconContainer: {
       width: 50,
@@ -238,24 +257,32 @@ export const modal = ({ dark, transparent }: ModalStyleProps) =>
     },
   });
 
-export const loader = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    columnGap: 10,
-  },
-  line: {
-    height: 20,
-    width: 20,
-    borderRadius: 100,
-    backgroundColor: COLORS.paleGrey,
-  },
-});
+export const loader = ({ sm, lg, dark, primary }: LoaderIndicatorProps) => {
+  const size = sm ? 10 : lg ? 25 : 20;
+  const bgColor = dark
+    ? COLORS.fireFly
+    : primary
+    ? COLORS.pastelOrange
+    : COLORS.white;
+  return StyleSheet.create({
+    container: {
+      flexDirection: "row",
+      columnGap: 10,
+    },
+    line: {
+      height: size,
+      width: size,
+      borderRadius: 100,
+      backgroundColor: bgColor,
+    },
+  });
+};
 
 export const clickOutSide = ({ ...rest }: ViewStyle) =>
   StyleSheet.create({
     container: {
       backgroundColor: COLORS.transparent,
-      ...rest,
+      zIndex: 1,
     },
   });
 
@@ -274,5 +301,115 @@ export const invalidMessage = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+});
+
+export const dropDown = ({ error }: Partial<InputProps>) =>
+  StyleSheet.create({
+    container: {
+      position: "relative",
+    },
+    contentContainer: {
+      borderWidth: 1,
+      borderRadius: COMPONENT.defaultRaduis,
+      borderColor: error ? COLORS.lavaRed : COLORS.cottonSeed,
+      height: COMPONENT.defaultHeight,
+      flexDirection: "row",
+    },
+    valueContainer: {
+      flex: 1,
+      justifyContent: "center",
+      paddingHorizontal: SPACING.defaultPadding,
+    },
+    valueText: {
+      fontSize: FONT_SIZE.input,
+    },
+    suffixContainer: {
+      width: COMPONENT.defaultHeight,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    listContainer: {
+      borderWidth: 1,
+      borderBottomLeftRadius: COMPONENT.defaultRaduis,
+      borderBottomRightRadius: COMPONENT.defaultRaduis,
+      position: "absolute",
+      paddingVertical: 5,
+      top: "93%",
+      width: "100%",
+      borderTopColor: COLORS.transparent,
+      borderLeftColor: COLORS.cottonSeed,
+      borderRightColor: COLORS.cottonSeed,
+      borderBottomColor: COLORS.cottonSeed,
+      backgroundColor: COLORS.paleGrey,
+      rowGap: 5,
+    },
+    item: {
+      height: 40,
+      justifyContent: "center",
+      paddingHorizontal: SPACING.defaultPadding,
+      marginHorizontal: 5,
+      borderRadius: COMPONENT.defaultRaduis,
+    },
+    selectedItem: {
+      backgroundColor: COLORS.heavyMetal,
+    },
+    selectedItemText: {
+      color: COLORS.white,
+    },
+  });
+
+export const dropdownSearch = StyleSheet.create({
+  container: {
+    zIndex: 2,
+  },
+  listContainer: {
+    borderWidth: 1,
+    paddingBottom: 5,
+    top: -16,
+    width: "100%",
+    backgroundColor: COLORS.paleGrey,
+    borderTopColor: COLORS.transparent,
+    borderLeftColor: COLORS.cottonSeed,
+    borderRightColor: COLORS.cottonSeed,
+    borderBottomColor: COLORS.cottonSeed,
+    borderBottomLeftRadius: COMPONENT.defaultRaduis,
+    borderBottomRightRadius: COMPONENT.defaultRaduis,
+    minHeight: 50,
+  },
+  list: {
+    minHeight: 235,
+  },
+  listItem: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    columnGap: 5,
+    height: 40,
+    paddingHorizontal: SPACING.defaultPadding,
+    marginHorizontal: 5,
+    marginTop: 5,
+    borderRadius: COMPONENT.defaultRaduis,
+  },
+  listItemDivider: {
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.cottonSeed,
+  },
+  footerContainer: {
+    paddingTop: 5,
+    paddingHorizontal: 5,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
+
+export const emptyList = StyleSheet.create({
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: SPACING.defaultPadding,
   },
 });

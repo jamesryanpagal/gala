@@ -11,7 +11,7 @@ import { TextReg } from "../../components/Text";
 import { form } from "../../styles/components-styles/components.style";
 import { useLogin } from "../../utils/hooks/queries/useOnBoarding";
 import KeyboardView from "../../components/KeyboardView";
-import ContainerClickOutSide from "../../components/ContainerClickOutSide";
+import Cots from "../../components/ContainerClickOutSide";
 import { LoginHeader } from "../../components/NavHeader";
 import InvalidMessage from "../../components/InvalidMessage";
 import Loader from "../../components/Loader";
@@ -62,7 +62,7 @@ const Login = () => {
             {({ handleSubmit, handleChange, values }) => {
               return (
                 <View style={container}>
-                  <ContainerClickOutSide>
+                  <Cots>
                     <Input
                       label={I18n.t("email")}
                       onChangeText={handleChange("email")}
@@ -84,7 +84,7 @@ const Login = () => {
                         </TouchableOpacity>
                       }
                     />
-                  </ContainerClickOutSide>
+                  </Cots>
                   <Button onPress={handleSubmit} disabled={isLoading}>
                     <TextReg title={I18n.t("loginLbl")} light />
                   </Button>

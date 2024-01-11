@@ -5,9 +5,15 @@ import Modal, { ModalProps } from "./Modal";
 import { loader } from "../styles/components-styles/components.style";
 
 export type LoaderProps = Pick<ModalProps, "open">;
+export type LoaderIndicatorProps = {
+  sm?: boolean;
+  lg?: boolean;
+  dark?: boolean;
+  primary?: boolean;
+};
 
-const Loader = ({ open }: LoaderProps) => {
-  const { container, line } = loader;
+export const LoaderIndicator = ({ ...rest }: LoaderIndicatorProps) => {
+  const { container, line } = loader({ ...rest });
 
   const lineRef1 = useRef(new Animated.Value(0));
   const lineRef2 = useRef(new Animated.Value(0));
@@ -36,56 +42,61 @@ const Loader = ({ open }: LoaderProps) => {
       ]),
     ).start();
   }, []);
+  return (
+    <View style={container}>
+      <Animated.View
+        style={[
+          line,
+          {
+            transform: [
+              {
+                translateY: lineRef1.current.interpolate({
+                  inputRange: [0, 5, 10],
+                  outputRange: [0, -10, 0],
+                }),
+              },
+            ],
+          },
+        ]}
+      />
+      <Animated.View
+        style={[
+          line,
+          {
+            transform: [
+              {
+                translateY: lineRef2.current.interpolate({
+                  inputRange: [0, 5, 10],
+                  outputRange: [0, -10, 0],
+                }),
+              },
+            ],
+          },
+        ]}
+      />
+      <Animated.View
+        style={[
+          line,
+          {
+            transform: [
+              {
+                translateY: lineRef3.current.interpolate({
+                  inputRange: [0, 5, 10],
+                  outputRange: [0, -10, 0],
+                }),
+              },
+            ],
+          },
+        ]}
+      />
+    </View>
+  );
+};
 
+const Loader = ({ open }: LoaderProps) => {
   return (
     <Modal open={open} header={<></>} transparent>
-      <View style={container}>
-        <Animated.View
-          style={[
-            line,
-            {
-              transform: [
-                {
-                  translateY: lineRef1.current.interpolate({
-                    inputRange: [0, 5, 10],
-                    outputRange: [0, -10, 0],
-                  }),
-                },
-              ],
-            },
-          ]}
-        />
-        <Animated.View
-          style={[
-            line,
-            {
-              transform: [
-                {
-                  translateY: lineRef2.current.interpolate({
-                    inputRange: [0, 5, 10],
-                    outputRange: [0, -10, 0],
-                  }),
-                },
-              ],
-            },
-          ]}
-        />
-        <Animated.View
-          style={[
-            line,
-            {
-              transform: [
-                {
-                  translateY: lineRef3.current.interpolate({
-                    inputRange: [0, 5, 10],
-                    outputRange: [0, -10, 0],
-                  }),
-                },
-              ],
-            },
-          ]}
-        />
-      </View>
+      <LoaderIndicator />
     </Modal>
   );
 };

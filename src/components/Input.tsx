@@ -1,7 +1,7 @@
 import React, { ForwardedRef } from "react";
 import { View, TextInput, TextInputProps } from "react-native";
 import { input } from "../styles/components-styles/components.style";
-import { TextReg } from "./Text";
+import { TextReg, TextS } from "./Text";
 import { COLORS } from "../utils/constants/colors";
 import I18n from "../utils/translation/translation";
 
@@ -10,12 +10,19 @@ export type Message = {
   title: string;
 };
 
+export type InputRules = {
+  label: string;
+  isDone: boolean;
+};
+
 export type InputProps = TextInputProps & {
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
   message?: Message;
   optional?: boolean;
   error?: boolean;
+  rules?: InputRules[];
+  disabled?: boolean;
   label: string;
   forwardedRef?: ForwardedRef<TextInput>;
 };
@@ -26,7 +33,9 @@ const Input = ({
   message,
   optional,
   label,
+  rules,
   error,
+  disabled,
   forwardedRef,
   ...rest
 }: InputProps) => {
@@ -36,8 +45,10 @@ const Input = ({
     fieldContainer,
     iconContainer,
     field,
+    rulesContainer,
     invalidContainer,
-  } = input({ error });
+  } = input({ error, disabled });
+
   return (
     <View style={container}>
       <View style={labelContainer}>
@@ -52,16 +63,30 @@ const Input = ({
         {!!prefix && <View style={iconContainer}>{prefix}</View>}
         <TextInput
           ref={forwardedRef}
-          {...rest}
           placeholderTextColor={COLORS.cottonSeed}
           selectionColor={COLORS.carbonGrey}
           style={field}
+          {...(disabled && { editable: false })}
+          {...rest}
         />
         {!!suffix && <View style={iconContainer}>{suffix}</View>}
       </View>
       {!!message && (
         <View style={invalidContainer}>
           {/* <TextReg title={invalid} danger /> */}
+        </View>
+      )}
+      {!!rules && rules.some(r => !!!r.isDone) && (
+        <View style={rulesContainer}>
+          {rules.map(({ label, isDone }, i) => {
+            return (
+              <TextS
+                key={i}
+                title={label}
+                {...(!isDone ? { danger: true } : { success: true })}
+              />
+            );
+          })}
         </View>
       )}
     </View>

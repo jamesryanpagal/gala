@@ -6,6 +6,7 @@ export type ButtonTypeProps = {
   bordered?: boolean;
   rounded?: boolean;
   link?: boolean;
+  reg?: boolean;
   bgColor?: string;
   flex?: boolean;
   disabled?: boolean;

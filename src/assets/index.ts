@@ -1,6 +1,6 @@
 // welcome
 import appLogoFull from "./logo/app-full-logo.png";
-import appIconSm from "./icons/app-icon.sm.png";
+import appIconSm from "./icons/app-icon-sm.png";
 import welcomeImg from "./images/welcome-img.png";
 import fbSSOicon from "./icons/welcome/facebook-btn.png";
 import googleSSOicon from "./icons/welcome/google-btn.png";
@@ -14,9 +14,14 @@ import headerCloseIconBlack from "./icons/header/header-close-black.png";
 import showPassword from "./icons/inputs/show-password-icon.png";
 import hidePassword from "./icons/inputs/hide-password-icon.png";
 import invalidIcon from "./icons/invalid-icon-sm.png";
+import dropdownExpandIcon from "./icons/inputs/dropdown-expand-icon.png";
+import dropdownMinimizeIcon from "./icons/inputs/dropdown-minimize-icon.png";
 
 // login && signup
 import joinJourneyImage from "./images/signup-getstarted-img.png";
+
+// components
+import emptyDataIcon from "./icons/empty-icon-sm.png";
 
 export {
   appLogoFull,
@@ -30,5 +35,8 @@ export {
   showPassword,
   hidePassword,
   invalidIcon,
+  dropdownExpandIcon,
+  dropdownMinimizeIcon,
   joinJourneyImage,
+  emptyDataIcon,
 };

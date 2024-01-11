@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from "react";
+import React, { useState, useRef, useMemo, useEffect, useReducer } from "react";
 import { View, TextInput } from "react-native";
 import { Formik, FormikProps } from "formik";
 
@@ -9,7 +9,7 @@ import Input from "../../components/Input";
 import I18n from "../../utils/translation/translation";
 import { Button } from "../../components/Button";
 import KeyboardView from "../../components/KeyboardView";
-import ContainerClickOutSide from "../../components/ContainerClickOutSide";
+import Cots from "../../components/ContainerClickOutSide";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "../../components/Icon";
 import { hidePassword, showPassword } from "../../assets";
@@ -21,6 +21,20 @@ import {
   addressContactInformationValidationSchema,
   userDetailsValidationSchema,
 } from "../../utils/regexp/schema";
+import {
+  useAutoCompleteBirthdate,
+  useAutoCompleteContactNum,
+} from "../../utils/hooks/useAutoComplete";
+import Dropdown from "../../components/Dropdown";
+import { GENDER } from "../../utils/constants/data";
+import { passwordRules } from "../../utils/helpers/rules";
+import {
+  useCityOrMunicipality,
+  useProvince,
+  useRegion,
+} from "../../utils/hooks/queries/usePHPlaces";
+import { useInfiniteList } from "../../utils/hooks/useInfiniteList";
+import DropdownSearch, { DropDownData } from "../../components/DropdownSearch";
 
 export const enum STEPS {
   STEP1 = 1,
@@ -40,14 +54,44 @@ export type SignupFormValues = {
   middle?: string;
   lastName?: string;
   birthdate: string;
-  gender: "male" | "female";
-  address: string;
+  gender: "1" | "0";
+  region: string;
+  province: string;
+  cityOrMunicipality: string;
   contactNum: string;
   username: string;
   email: string;
   password: string;
   confirmPassword: string;
 };
+
+export type DropDownState = {
+  dropDownRegions: DropDownData[];
+  dropDownProvinces: DropDownData[];
+  dropDownCitiesOrMunicipalities: DropDownData[];
+  regionSearch: string;
+  provinceSearch: string;
+  cityOrMunicipalitySearch: string;
+  regionCode: string;
+  provinceCode: string;
+};
+
+export type UpdateAction = {
+  type: "updateRegion" | "updateProvince" | "updateCitiesOrMunicipalities";
+  payload: DropDownData[];
+};
+
+export type SearchAction = {
+  type:
+    | "searchRegion"
+    | "searchProvince"
+    | "searchCityOrMunicipality"
+    | "saveRegionCode"
+    | "saveProvinceCode";
+  payload: string;
+};
+
+export type DropDownActions = UpdateAction | SearchAction;
 
 export type FullnameFormProps = Pick<
   SignupFormValues,
@@ -58,7 +102,7 @@ export type BirthdateFormProps = Pick<SignupFormValues, "birthdate" | "gender">;
 
 export type AddressContactInformationFormProps = Pick<
   SignupFormValues,
-  "address" | "contactNum"
+  "region" | "contactNum" | "province" | "cityOrMunicipality"
 >;
 
 export type UserDetailsFormProps = Pick<
@@ -108,7 +152,7 @@ const FullnameForm = ({ details, setDetails, setStep }: FormFieldProps) => {
             </View>
             <View style={container}>
               <Container>
-                <ContainerClickOutSide>
+                <Cots>
                   <Input
                     ref={ref => ref && (inputRef.current[0] = ref)}
                     label={I18n.t("firstNameLbl")}
@@ -140,7 +184,7 @@ const FullnameForm = ({ details, setDetails, setStep }: FormFieldProps) => {
                     returnKeyType="next"
                     onSubmitEditing={() => inputRef.current[2].blur()}
                   />
-                </ContainerClickOutSide>
+                </Cots>
               </Container>
               <Button disabled={!isComplete} onPress={handleSubmit}>
                 <TextReg title={I18n.t("nextLbl")} light />
@@ -164,6 +208,8 @@ const BirthdateGenderForm = ({
   const formRef = useRef<FormikProps<BirthdateFormProps>>(null);
   const inputRef = useRef<TextInput[]>([]);
 
+  const { onChangeText, onKeyPress } = useAutoCompleteBirthdate();
+
   const initialValues: BirthdateFormProps = {
     birthdate,
     gender,
@@ -186,7 +232,11 @@ const BirthdateGenderForm = ({
         values,
         touched,
         errors,
+        isValid,
       }) => {
+        const { birthdate } = values;
+        const isComplete = !!birthdate && isValid;
+        const handleChangeText = onChangeText(handleChange("birthdate"));
         return (
           <>
             <View style={formHeaderContainer}>
@@ -195,11 +245,12 @@ const BirthdateGenderForm = ({
             </View>
             <View style={container}>
               <Container>
-                <ContainerClickOutSide>
+                <Cots>
                   <Input
                     ref={ref => ref && (inputRef.current[0] = ref)}
                     label={I18n.t("birthdateLbl")}
-                    onChangeText={handleChange("birthdate")}
+                    onChangeText={handleChangeText}
+                    onKeyPress={onKeyPress}
                     placeholder="mm/dd/yyyy"
                     value={values.birthdate}
                     error={touched.birthdate && !!errors.birthdate}
@@ -208,24 +259,19 @@ const BirthdateGenderForm = ({
                     keyboardType="number-pad"
                     onSubmitEditing={() => inputRef.current[1].focus()}
                   />
-                  <Input
-                    ref={ref => ref && (inputRef.current[1] = ref)}
+                  <Dropdown
                     label={I18n.t("genderLbl")}
-                    onChangeText={handleChange("gender")}
-                    value={values.gender}
-                    error={touched.gender && !!errors.gender}
-                    onBlur={handleBlur("gender")}
-                    returnKeyType="next"
-                    keyboardType="number-pad"
-                    onSubmitEditing={() => inputRef.current[1].blur()}
+                    values={GENDER}
+                    defualtValue={values.gender}
+                    onChange={handleChange("gender")}
                   />
-                </ContainerClickOutSide>
+                </Cots>
               </Container>
               <View style={actionContainer}>
                 <Button bordered flex onPress={() => setStep(STEPS.STEP1)}>
                   <TextReg title={I18n.t("previousLbl")} />
                 </Button>
-                <Button flex onPress={handleSubmit}>
+                <Button disabled={!isComplete} flex onPress={handleSubmit}>
                   <TextReg title={I18n.t("nextLbl")} light />
                 </Button>
               </View>
@@ -242,14 +288,152 @@ const AddressContactInformationForm = ({
   setDetails,
   setStep,
 }: FormFieldProps) => {
-  const { address, contactNum } = details;
+  const { region, province, cityOrMunicipality, contactNum } = details;
   const { formHeaderContainer, container, actionContainer } = form;
 
   const formRef = useRef<FormikProps<AddressContactInformationFormProps>>(null);
   const inputRef = useRef<TextInput[]>([]);
 
+  const dropDownReducer = (state: DropDownState, actions: DropDownActions) => {
+    const { type, payload } = actions;
+
+    const onChangeState = (key: keyof DropDownState) => {
+      return { ...state, [key]: payload };
+    };
+
+    switch (type) {
+      case "updateRegion":
+        return onChangeState("dropDownRegions");
+      case "updateProvince":
+        return onChangeState("dropDownProvinces");
+      case "updateCitiesOrMunicipalities":
+        return onChangeState("dropDownCitiesOrMunicipalities");
+      case "searchRegion":
+        return onChangeState("regionSearch");
+      case "searchProvince":
+        return onChangeState("provinceSearch");
+      case "searchCityOrMunicipality":
+        return onChangeState("cityOrMunicipalitySearch");
+      case "saveRegionCode":
+        return onChangeState("regionCode");
+      case "saveProvinceCode":
+        return onChangeState("provinceCode");
+      default:
+        return { ...state };
+    }
+  };
+
+  const [state, dispatch] = useReducer(dropDownReducer, {
+    dropDownRegions: [],
+    dropDownProvinces: [],
+    dropDownCitiesOrMunicipalities: [],
+    regionSearch: "",
+    provinceSearch: "",
+    cityOrMunicipalitySearch: "",
+    regionCode: "",
+    provinceCode: "",
+  });
+
+  const {
+    dropDownRegions,
+    dropDownProvinces,
+    dropDownCitiesOrMunicipalities,
+    regionSearch,
+    provinceSearch,
+    cityOrMunicipalitySearch,
+    regionCode,
+    provinceCode,
+  } = state;
+
+  const {
+    data: regions,
+    isLoading: isLoadingRegions,
+    isFetchingNextPage: isFetchingNextPageRegions,
+    hasNextPage: regionsHasNextPage,
+    fetchNextPage: fetchNextPageRegions,
+  } = useRegion({ search: regionSearch });
+
+  const {
+    data: provinces,
+    isLoading: isLoadingProvinces,
+    isFetchingNextPage: isFetchingNextPageProvinces,
+    hasNextPage: provincesHasNextPage,
+    fetchNextPage: fetchNextPageProvinces,
+  } = useProvince({
+    search: provinceSearch,
+    regionCode,
+  });
+
+  const {
+    data: citiesOrMunicipalities,
+    isLoading: isLoadingCitiesOrMunicipalities,
+    isFetchingNextPage: isFetchingNextPageCitiesOrMunicipalities,
+    hasNextPage: citiesOrMunicipalitiesHasNextPage,
+    fetchNextPage: fetchNextPageCitiesOrMunicipalities,
+  } = useCityOrMunicipality({
+    search: cityOrMunicipalitySearch,
+    regionCode,
+    provinceCode,
+  });
+
+  useInfiniteList(regions, {
+    onSuccess: data => {
+      const list = data?.reduce((acc, c, _i, _arr) => {
+        return (acc = [
+          ...acc,
+          {
+            id: c.code,
+            primaryLabel: c.regionname,
+            secondaryLabel: c.region,
+            value: c.code,
+          },
+        ]);
+      }, [] as DropDownData[]);
+
+      dispatch({ type: "updateRegion", payload: list || [] });
+    },
+  });
+
+  useInfiniteList(provinces, {
+    onSuccess: data => {
+      const list = data?.reduce((acc, c, _i, _arr) => {
+        return (acc = [
+          ...acc,
+          {
+            id: c.code,
+            primaryLabel: c.province,
+            value: c.code,
+          },
+        ]);
+      }, [] as DropDownData[]);
+
+      dispatch({ type: "updateProvince", payload: list || [] });
+    },
+  });
+
+  useInfiniteList(citiesOrMunicipalities, {
+    onSuccess: data => {
+      const list = data?.reduce((acc, c, _i, _arr) => {
+        return (acc = [
+          ...acc,
+          {
+            id: c.code,
+            primaryLabel: c.cityormunicipality,
+            value: c.code,
+          },
+        ]);
+      }, [] as DropDownData[]);
+
+      dispatch({ type: "updateCitiesOrMunicipalities", payload: list || [] });
+    },
+  });
+
+  const { onChangeText, onKeyPress } = useAutoCompleteContactNum();
+
   const initialValues: AddressContactInformationFormProps = {
-    address,
+    region,
+    province,
+    cityOrMunicipality,
     contactNum,
   };
 
@@ -270,7 +454,24 @@ const AddressContactInformationForm = ({
         values,
         touched,
         errors,
+        isValid,
       }) => {
+        const {
+          region: regionVal,
+          province: provinceVal,
+          cityOrMunicipality: cityOrMunicipalityVal,
+          contactNum: contactNumVal,
+        } = values;
+        const isComplete =
+          !!regionVal &&
+          !!provinceVal &&
+          !!cityOrMunicipalityVal &&
+          !!contactNum &&
+          isValid;
+        const isDisableProvince = !!regionVal && !!dropDownProvinces.length;
+
+        // const handleChangeText = onChangeText(handleChange("contactNum"));
+
         return (
           <>
             <View style={formHeaderContainer}>
@@ -279,34 +480,97 @@ const AddressContactInformationForm = ({
             </View>
             <View style={container}>
               <Container>
-                <ContainerClickOutSide>
-                  <Input
-                    ref={ref => ref && (inputRef.current[0] = ref)}
-                    label={I18n.t("addressLbl")}
-                    onChangeText={handleChange("address")}
-                    value={values.address}
-                    error={touched.address && !!errors.address}
-                    onBlur={handleBlur("address")}
-                    returnKeyType="next"
-                    onSubmitEditing={() => inputRef.current[1].focus()}
+                <Cots>
+                  <DropdownSearch
+                    data={dropDownRegions}
+                    value={regionVal}
+                    label={I18n.t("regionLbl")}
+                    loadingData={isLoadingRegions}
+                    loadingNextPage={isFetchingNextPageRegions}
+                    handleChange={v => {
+                      handleChange("region")(v);
+                      dispatch({ type: "saveRegionCode", payload: v });
+                    }}
+                    onSearch={v => {
+                      dispatch({ type: "searchRegion", payload: v });
+                    }}
+                    onBlur={handleBlur("region")}
+                    error={touched.region && !!errors.region}
+                    {...(regionsHasNextPage && {
+                      onLoadMore: () => fetchNextPageRegions(),
+                    })}
                   />
-                  <Input
+                  <DropdownSearch
+                    data={dropDownProvinces}
+                    value={provinceVal}
+                    label={I18n.t("provinceLbl")}
+                    loadingData={isLoadingProvinces}
+                    loadingNextPage={isFetchingNextPageProvinces}
+                    handleChange={v => {
+                      handleChange("province")(v);
+                      dispatch({ type: "saveProvinceCode", payload: v });
+                    }}
+                    onSearch={v => {
+                      dispatch({ type: "searchProvince", payload: v });
+                    }}
+                    onBlur={handleBlur("province")}
+                    error={
+                      isDisableProvince && touched.province && !!errors.province
+                    }
+                    {...(!provinceSearch && {
+                      disabled: !isDisableProvince,
+                    })}
+                    {...(provincesHasNextPage && {
+                      onLoadMore: () => fetchNextPageProvinces(),
+                    })}
+                  />
+                  <DropdownSearch
+                    data={dropDownCitiesOrMunicipalities}
+                    value={cityOrMunicipalityVal}
+                    label={I18n.t("citiesOrMunicipalitiesLbl")}
+                    loadingData={isLoadingCitiesOrMunicipalities}
+                    loadingNextPage={isFetchingNextPageCitiesOrMunicipalities}
+                    handleChange={v => {
+                      handleChange("cityOrMunicipality")(v);
+                    }}
+                    onSearch={v => {
+                      dispatch({
+                        type: "searchCityOrMunicipality",
+                        payload: v,
+                      });
+                    }}
+                    onBlur={handleBlur("cityOrMunicipality")}
+                    error={
+                      !!regionVal &&
+                      touched.cityOrMunicipality &&
+                      !!errors.cityOrMunicipality
+                    }
+                    {...(!cityOrMunicipalitySearch && {
+                      disabled: !!!regionVal,
+                    })}
+                    {...(citiesOrMunicipalitiesHasNextPage && {
+                      onLoadMore: () => fetchNextPageCitiesOrMunicipalities(),
+                    })}
+                  />
+                  {/* <Input
                     ref={ref => ref && (inputRef.current[1] = ref)}
+                    prefix={<TextReg title={I18n.t("contactNumPrefixLbl")} />}
                     label={I18n.t("contactNumLbl")}
-                    onChangeText={handleChange("contactNum")}
+                    onChangeText={handleChangeText}
+                    onKeyPress={onKeyPress}
                     value={values.contactNum}
                     error={touched.contactNum && !!errors.contactNum}
                     onBlur={handleBlur("contactNum")}
                     returnKeyType="next"
                     onSubmitEditing={() => inputRef.current[1].blur()}
-                  />
-                </ContainerClickOutSide>
+                  /> */}
+                </Cots>
               </Container>
               <View style={actionContainer}>
                 <Button bordered flex onPress={() => setStep(STEPS.STEP2)}>
                   <TextReg title={I18n.t("previousLbl")} />
                 </Button>
-                <Button flex onPress={handleSubmit}>
+                <Button disabled={!isComplete} flex onPress={handleSubmit}>
                   <TextReg title={I18n.t("nextLbl")} light />
                 </Button>
               </View>
@@ -351,7 +615,11 @@ const UserDetailsForm = ({ details, setDetails, setStep }: FormFieldProps) => {
         values,
         touched,
         errors,
+        isValid,
       }) => {
+        const { username, email, password, confirmPassword } = values;
+        const isComplete =
+          !!username && !!email && !!password && !!confirmPassword && isValid;
         return (
           <>
             <View style={formHeaderContainer}>
@@ -360,13 +628,13 @@ const UserDetailsForm = ({ details, setDetails, setStep }: FormFieldProps) => {
             </View>
             <View style={container}>
               <Container scrollable>
-                <ContainerClickOutSide>
+                <Cots>
                   <Input
                     ref={ref => ref && (inputRef.current[0] = ref)}
                     label={I18n.t("usernameLbl")}
                     onChangeText={handleChange?.("username")}
-                    value={values?.username}
-                    error={touched?.username && !!errors?.username}
+                    value={values.username}
+                    error={touched.username && !!errors?.username}
                     onBlur={handleBlur?.("username")}
                     returnKeyType="next"
                     onSubmitEditing={() => inputRef.current[1].focus()}
@@ -375,8 +643,8 @@ const UserDetailsForm = ({ details, setDetails, setStep }: FormFieldProps) => {
                     ref={ref => ref && (inputRef.current[1] = ref)}
                     label={I18n.t("emailLbl")}
                     onChangeText={handleChange?.("email")}
-                    value={values?.email}
-                    error={touched?.email && !!errors?.email}
+                    value={values.email}
+                    error={touched.email && !!errors?.email}
                     onBlur={handleBlur?.("email")}
                     returnKeyType="next"
                     keyboardType="email-address"
@@ -388,11 +656,14 @@ const UserDetailsForm = ({ details, setDetails, setStep }: FormFieldProps) => {
                     label={I18n.t("passwordLbl")}
                     onChangeText={handleChange?.("password")}
                     secureTextEntry={!isShowPassword}
-                    value={values?.password}
-                    error={touched?.password && !!errors?.password}
+                    value={values.password}
+                    error={touched.password && !!errors?.password}
                     onBlur={handleBlur?.("password")}
                     textContentType="password"
                     returnKeyType="next"
+                    {...(values.password && {
+                      rules: passwordRules(values.password),
+                    })}
                     suffix={
                       <TouchableOpacity
                         onPress={() => setIsShowPassword?.(prev => !prev)}>
@@ -408,10 +679,8 @@ const UserDetailsForm = ({ details, setDetails, setStep }: FormFieldProps) => {
                     label={I18n.t("confirmPasswordLbl")}
                     onChangeText={handleChange?.("confirmPassword")}
                     secureTextEntry={!isShowConfirmPassword}
-                    value={values?.confirmPassword}
-                    error={
-                      touched?.confirmPassword && !!errors?.confirmPassword
-                    }
+                    value={values.confirmPassword}
+                    error={touched.confirmPassword && !!errors?.confirmPassword}
                     onBlur={handleBlur?.("confirmPassword")}
                     textContentType="password"
                     returnKeyType="done"
@@ -429,14 +698,14 @@ const UserDetailsForm = ({ details, setDetails, setStep }: FormFieldProps) => {
                     }
                     onSubmitEditing={() => inputRef.current[3].blur()}
                   />
-                </ContainerClickOutSide>
+                </Cots>
               </Container>
 
               <View style={[actionContainer, { marginTop: 10 }]}>
                 <Button bordered flex onPress={() => setStep(STEPS.STEP3)}>
                   <TextReg title={I18n.t("previousLbl")} />
                 </Button>
-                <Button flex onPress={handleSubmit}>
+                <Button disabled={!isComplete} flex onPress={handleSubmit}>
                   <TextReg title={I18n.t("signupLbl")} light />
                 </Button>
               </View>
@@ -455,8 +724,10 @@ const Signup = () => {
     middle: "",
     lastName: "",
     birthdate: "",
-    gender: "male",
-    address: "",
+    gender: "1",
+    region: "",
+    province: "",
+    cityOrMunicipality: "",
     contactNum: "",
     username: "",
     email: "",
@@ -500,8 +771,6 @@ const Signup = () => {
         );
     }
   }, [details, step]);
-
-  // const { onChangeText, onKeyPress } = useAutoComplete();
 
   return (
     <SafeAreaContainer>

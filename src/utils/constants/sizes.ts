@@ -6,6 +6,7 @@ export const ICON_SIZES = {
 };
 
 export const FONT_SIZE = {
+  fontS: 12,
   fontReg: 15,
   fontM: 25,
   fontL: 36,

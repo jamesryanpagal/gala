@@ -21,10 +21,9 @@ export const birthdateGenderValidationSchema = yup.object().shape({
 });
 
 export const addressContactInformationValidationSchema = yup.object().shape({
-  address: yup
-    .string()
-    .matches(pattern.ADDRESS, I18n.t("invalidAddressLbl"))
-    .required(I18n.t("requiredFieldLbl")),
+  region: yup.string().required(I18n.t("requiredFieldLbl")),
+  province: yup.string().required(I18n.t("requiredFieldLbl")),
+  cityOrMunicipality: yup.string().required(I18n.t("requiredFieldLbl")),
   contactNum: yup
     .string()
     .matches(pattern.CONTACT, I18n.t("invalidContactNumLbl"))
@@ -35,6 +34,7 @@ export const userDetailsValidationSchema = yup.object().shape({
   username: yup
     .string()
     .matches(pattern.USERNAME, I18n.t("invalidUsernameLbl"))
+    .max(12, ({ max }) => I18n.t("usernameMaxLengthLbl", { count: max }))
     .required(I18n.t("requiredFieldLbl")),
   email: yup
     .string()
