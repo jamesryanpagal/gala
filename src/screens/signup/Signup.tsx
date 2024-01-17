@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useEffect, useReducer } from "react";
+import React, { useState, useRef, useMemo, useReducer } from "react";
 import { View, TextInput } from "react-native";
 import { Formik, FormikProps } from "formik";
 
@@ -330,8 +330,8 @@ const AddressContactInformationForm = ({
     regionSearch: "",
     provinceSearch: "",
     cityOrMunicipalitySearch: "",
-    regionCode: "",
-    provinceCode: "",
+    regionCode: region,
+    provinceCode: province,
   });
 
   const {
@@ -462,15 +462,12 @@ const AddressContactInformationForm = ({
           cityOrMunicipality: cityOrMunicipalityVal,
           contactNum: contactNumVal,
         } = values;
+
         const isComplete =
-          !!regionVal &&
-          !!provinceVal &&
-          !!cityOrMunicipalityVal &&
-          !!contactNum &&
-          isValid;
+          !!regionVal && !!cityOrMunicipalityVal && !!contactNumVal && isValid;
         const isDisableProvince = !!regionVal && !!dropDownProvinces.length;
 
-        // const handleChangeText = onChangeText(handleChange("contactNum"));
+        const handleChangeText = onChangeText(handleChange("contactNum"));
 
         return (
           <>
@@ -479,7 +476,7 @@ const AddressContactInformationForm = ({
               <TextReg title={I18n.t("signupFormFillOutTxt")} />
             </View>
             <View style={container}>
-              <Container>
+              <Container scrollable flexContent>
                 <Cots>
                   <DropdownSearch
                     data={dropDownRegions}
@@ -552,18 +549,18 @@ const AddressContactInformationForm = ({
                       onLoadMore: () => fetchNextPageCitiesOrMunicipalities(),
                     })}
                   />
-                  {/* <Input
+                  <Input
                     ref={ref => ref && (inputRef.current[1] = ref)}
                     prefix={<TextReg title={I18n.t("contactNumPrefixLbl")} />}
                     label={I18n.t("contactNumLbl")}
                     onChangeText={handleChangeText}
                     onKeyPress={onKeyPress}
-                    value={values.contactNum}
+                    value={contactNumVal}
                     error={touched.contactNum && !!errors.contactNum}
                     onBlur={handleBlur("contactNum")}
                     returnKeyType="next"
                     onSubmitEditing={() => inputRef.current[1].blur()}
-                  /> */}
+                  />
                 </Cots>
               </Container>
               <View style={actionContainer}>

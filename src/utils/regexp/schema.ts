@@ -22,7 +22,7 @@ export const birthdateGenderValidationSchema = yup.object().shape({
 
 export const addressContactInformationValidationSchema = yup.object().shape({
   region: yup.string().required(I18n.t("requiredFieldLbl")),
-  province: yup.string().required(I18n.t("requiredFieldLbl")),
+  province: yup.string(),
   cityOrMunicipality: yup.string().required(I18n.t("requiredFieldLbl")),
   contactNum: yup
     .string()

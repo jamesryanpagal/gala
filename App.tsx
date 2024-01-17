@@ -7,6 +7,7 @@ import Navigation from "./src/navigation";
 import { navRef } from "./src/navigate";
 import { linking } from "./src/navigate";
 import { ClickOutsideProvider } from "react-native-click-outside";
+import { UserProvider } from "./src/utils/context/context";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -15,7 +16,9 @@ const App = () => {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <NavigationContainer ref={navRef} linking={linking}>
           <ClickOutsideProvider>
-            <Navigation />
+            <UserProvider>
+              <Navigation />
+            </UserProvider>
           </ClickOutsideProvider>
         </NavigationContainer>
       </GestureHandlerRootView>

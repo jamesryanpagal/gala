@@ -49,8 +49,6 @@ const Dropdown = <T extends Value<T["value"]>>({
     );
   }, [defualtValue, values]);
 
-  const onToggle = () => setIsOpen(prev => !prev);
-
   const onSelectedItem = (val: string) => {
     onChange(val);
   };

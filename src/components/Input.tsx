@@ -37,6 +37,7 @@ const Input = ({
   error,
   disabled,
   forwardedRef,
+  style,
   ...rest
 }: InputProps) => {
   const {
@@ -50,7 +51,7 @@ const Input = ({
   } = input({ error, disabled });
 
   return (
-    <View style={container}>
+    <View style={[container, style]}>
       <View style={labelContainer}>
         <TextReg
           title={label}
