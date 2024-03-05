@@ -1,12 +1,20 @@
-import { useContext } from "react";
-import { UserContext } from "../context/context";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { AppStore } from "../redux/store";
+import { UserSlice } from "../redux/slices/userSlice";
 
 export const useUser = () => {
-  const { user, setUser } = useContext(UserContext);
+  const [details, setDetails] = useState<UserSlice | null>(null);
+  const user = useSelector<AppStore>(state => state.user);
 
-  if (!user) {
-    throw new Error("Context Error.");
-  }
+  useEffect(() => {
+    const userData = user as UserSlice;
+    const { token, user: userDetails } = userData;
 
-  return { user, setUser };
+    if (!!token && !!userDetails && Object.keys(userDetails).length > 0) {
+      setDetails({ token, user: userDetails });
+    }
+  }, [user]);
+
+  return details;
 };

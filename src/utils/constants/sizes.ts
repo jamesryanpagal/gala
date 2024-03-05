@@ -19,7 +19,7 @@ export const SPACING = {
   savPaddingV: 10,
   savPaddingH: 15,
   keyboardViewOffsetIos: 65,
-  keyboardViewOffsetAndroid: 0,
+  keyboardViewOffsetAndroid: 30,
   loginSignupNavHeaderHeight: 50,
   loginSignupNavHeaderSpaceBottom: 10,
 };

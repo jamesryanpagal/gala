@@ -2,7 +2,6 @@ import React from "react";
 import { Text as RNText, TextProps as RnTextProps } from "react-native";
 import { text } from "../styles/components-styles/components.style";
 import { FONT_SIZE } from "../utils/constants/sizes";
-import I18n from "../utils/translation/translation";
 
 export type TextScaleStyleProps = {
   fontSize: number;

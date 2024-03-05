@@ -3,11 +3,31 @@ import Login from "./screens/login/Login";
 import Welcome from "./screens/welcome/Welcome";
 import Signup from "./screens/signup/Signup";
 import GetStarted from "./screens/signup/GetStarted";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Home from "./screens/home/Home";
+import Map from "./screens/map/Map";
+import Routes from "./screens/routes/Routes";
+import Accommodation from "./screens/accommodation/Accommodation";
+import Service from "./screens/service/Service";
+import { useUser } from "./utils/hooks/useUser";
+import OnBoardedTabs from "./components/OnBoardedTabs";
+import OnBoardedHeader from "./components/OnBoardedHeader";
 
-export type WelcomeParamList = {
+export type OnboardingParamList = {
   Welcome: undefined;
   Login: undefined;
   CreateAccount: undefined;
+};
+
+export type OnboardedParamList = {
+  Home: undefined;
+  Map: undefined;
+  Routes: undefined;
+  Accommodation: undefined;
+  Service: undefined;
+  Profile: undefined;
+  Message: undefined;
+  Notification: undefined;
 };
 
 export type SignupParamList = {
@@ -15,9 +35,12 @@ export type SignupParamList = {
   Signup: undefined;
 };
 
-export type NavParamList = WelcomeParamList & SignupParamList;
+export type NavParamList = OnboardingParamList &
+  SignupParamList &
+  OnboardedParamList;
 
-const WelcomeStackNav = createStackNavigator<WelcomeParamList>();
+const OnboardingStackNav = createStackNavigator<OnboardingParamList>();
+const OnboardedBottomTabNav = createBottomTabNavigator<OnboardedParamList>();
 const SignupStackNav = createStackNavigator<SignupParamList>();
 
 function CreateAccountNavigation() {
@@ -32,16 +55,48 @@ function CreateAccountNavigation() {
 }
 
 export default function Navigation() {
-  return (
-    <WelcomeStackNav.Navigator
+  const user = useUser();
+
+  return !user ? (
+    <OnboardingStackNav.Navigator
       initialRouteName="Welcome"
       screenOptions={{ headerShown: false, gestureEnabled: false }}>
-      <WelcomeStackNav.Screen name="Welcome" component={Welcome} />
-      <WelcomeStackNav.Screen name="Login" component={Login} />
-      <WelcomeStackNav.Screen
+      <OnboardingStackNav.Screen name="Welcome" component={Welcome} />
+      <OnboardingStackNav.Screen name="Login" component={Login} />
+      <OnboardingStackNav.Screen
         name="CreateAccount"
         component={CreateAccountNavigation}
       />
-    </WelcomeStackNav.Navigator>
+    </OnboardingStackNav.Navigator>
+  ) : (
+    <OnboardedBottomTabNav.Navigator
+      initialRouteName="Home"
+      tabBar={OnBoardedTabs}>
+      <OnboardedBottomTabNav.Screen
+        name="Home"
+        component={Home}
+        options={{ header: OnBoardedHeader }}
+      />
+      <OnboardedBottomTabNav.Screen
+        name="Map"
+        component={Map}
+        options={{ header: OnBoardedHeader }}
+      />
+      <OnboardedBottomTabNav.Screen
+        name="Routes"
+        component={Routes}
+        options={{ header: OnBoardedHeader }}
+      />
+      <OnboardedBottomTabNav.Screen
+        name="Accommodation"
+        component={Accommodation}
+        options={{ header: OnBoardedHeader }}
+      />
+      <OnboardedBottomTabNav.Screen
+        name="Service"
+        component={Service}
+        options={{ header: OnBoardedHeader }}
+      />
+    </OnboardedBottomTabNav.Navigator>
   );
 }

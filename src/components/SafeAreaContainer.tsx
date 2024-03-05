@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from "react";
 import { View, SafeAreaView } from "react-native";
+import { SafeAreaViewProps } from "react-native-safe-area-context";
 
 import { safeArea } from "../styles/components-styles/components.style";
 
@@ -8,12 +9,18 @@ export type SafeAreaProps = {
   noPadding?: boolean;
 };
 
-type SafeAreaContainerProps = PropsWithChildren & SafeAreaProps;
+type SafeAreaContainerProps = PropsWithChildren &
+  SafeAreaProps &
+  SafeAreaViewProps;
 
-const SafeAreaContainer = ({ children, ...rest }: SafeAreaContainerProps) => {
+const SafeAreaContainer = ({
+  children,
+  style,
+  ...rest
+}: SafeAreaContainerProps) => {
   const { sav, contentContainer } = safeArea({ ...rest });
   return (
-    <SafeAreaView style={sav}>
+    <SafeAreaView style={[sav, style]}>
       <View style={contentContainer}>{children}</View>
     </SafeAreaView>
   );

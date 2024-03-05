@@ -7,6 +7,7 @@ export type IconSizeProps = {
   medium?: boolean;
   large?: boolean;
   xl?: boolean;
+  size?: number;
 };
 
 export type IconProps = IconSizeProps & ImageProps;
@@ -17,10 +18,11 @@ const Icon = ({
   medium,
   large,
   xl,
+  size,
   style,
   ...rest
 }: IconProps) => {
-  const { icon } = image({ resizeMode, small, medium, large, xl });
+  const { icon } = image({ resizeMode, small, medium, large, xl, size });
   return <Image {...rest} style={[icon, style]} />;
 };
 

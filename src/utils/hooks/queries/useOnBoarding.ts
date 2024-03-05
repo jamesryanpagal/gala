@@ -1,8 +1,8 @@
 import { loginFn, signupFn } from "../../api/query-fn/queryfn.api";
 import { LoginSignupResponse } from "../../api/query-fn/queryfn.api";
 import { LoginFormValues } from "../../../screens/login/Login";
-import { SignupFormValues } from "../../../screens/signup/Signup";
-import { ApiResponse, Response } from "../../api/axios.api";
+import { SignupForm } from "../../../screens/signup/Signup";
+import { Response } from "../../api/axios.api";
 import { MutationOptions, useQueryMutation } from "./useRQ";
 
 export const useLogin = (
@@ -16,11 +16,11 @@ export const useLogin = (
 };
 
 export const useSignup = (
-  options?: MutationOptions<ApiResponse<LoginSignupResponse>, SignupFormValues>,
+  options?: MutationOptions<Response<LoginSignupResponse>, SignupForm>,
 ) => {
-  // return useMutation({
-  //   ...options,
-  //   mutationKey: ["signup"],
-  //   mutationFn: signupFn,
-  // });
+  return useQueryMutation({
+    ...options,
+    mutationKey: ["signup"],
+    mutationFn: signupFn,
+  });
 };

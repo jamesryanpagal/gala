@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, memo } from "react";
 import {
   NativeSyntheticEvent,
   Pressable,
@@ -34,6 +34,7 @@ export type DropdownSearchProps<T, V> = InputProps & {
   handleChange?: (value: string) => void;
   loadingNextPage?: boolean;
   loadingData?: boolean;
+  clearSearch?: boolean;
 };
 
 const DropdownSearch = <T extends DropDownData>({
@@ -45,6 +46,7 @@ const DropdownSearch = <T extends DropDownData>({
   handleChange,
   loadingData,
   loadingNextPage,
+  clearSearch,
   ...rest
 }: DropdownSearchProps<T, T["value"]>) => {
   const {
@@ -73,6 +75,11 @@ const DropdownSearch = <T extends DropDownData>({
 
     setSearch(initialInputValue.primaryLabel);
   }, [value, data]);
+
+  useEffect(() => {
+    if (!clearSearch) return;
+    setSearch("");
+  }, [clearSearch]);
 
   const valueOnBlur = useCallback(() => {
     const checkSearchValue = data.find(d => {
@@ -119,7 +126,7 @@ const DropdownSearch = <T extends DropDownData>({
   );
 
   const renderList = useMemo(() => {
-    if (loadingData) {
+    if (loadingData && !data.length) {
       return (
         <View style={loaderContainer}>
           <LoaderIndicator sm dark />
@@ -183,4 +190,4 @@ const DropdownSearch = <T extends DropDownData>({
   );
 };
 
-export default DropdownSearch;
+export default memo(DropdownSearch);

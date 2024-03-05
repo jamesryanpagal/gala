@@ -1,19 +1,29 @@
 import { LoginFormValues } from "../../../screens/login/Login";
-import { SignupFormValues } from "../../../screens/signup/Signup";
-import { ApiResponse, apiPaginatedRequest, apiRequest } from "../axios.api";
+import { SignupForm } from "../../../screens/signup/Signup";
+import { apiPaginatedRequest, apiRequest } from "../axios.api";
 import { unAuthRequest } from "../base-request.api";
-import API_URL from "../url.api";
+import config from "../../config";
 
-export type LoginSignupResponse = {
-  token: string;
+export type UserResponse = {
+  userid: string;
   firstname: string;
   middle: string;
   lastname: string;
   birthdate: string;
-  address: string;
+  region: Pick<Region, "region" | "regionname" | "digitcode">;
+  province: Pick<Province, "province" | "digitcode">;
+  cityormunicipality: Pick<
+    CityOrMunicipality,
+    "cityormunicipality" | "digitcode"
+  >;
   cellphoneNum: string;
   username: string;
   email: string;
+};
+
+export type LoginSignupResponse = {
+  token: string;
+  user: UserResponse;
 };
 
 export type Region = {
@@ -47,6 +57,7 @@ export type Paginate = {
   page?: any;
   size?: number;
   search?: string;
+  initialCode?: string;
 };
 
 export type PaginateProvince = Paginate & {
@@ -59,27 +70,31 @@ export type PaginateCityOrMunicipality = PaginateProvince & {
 
 // onboarding
 export const loginFn = apiRequest<LoginFormValues, LoginSignupResponse>(
-  params => unAuthRequest.post(API_URL.LOGIN, params),
+  params => {
+    return unAuthRequest.post(config.loginEP, params);
+  },
 );
 
-export const signupFn = async (
-  props: SignupFormValues,
-): Promise<ApiResponse<LoginSignupResponse>> => {
-  return await unAuthRequest.post(API_URL.SIGN_UP, props);
-};
+export const signupFn = apiRequest<SignupForm, LoginSignupResponse>(params => {
+  return unAuthRequest.post(config.signupEP, params);
+});
 
 // ph-places - region
-export const phRegionFn = apiPaginatedRequest<Paginate, Region[]>(params =>
-  unAuthRequest.get(API_URL.PH_REGION, { params }),
-);
+export const phRegionFn = apiPaginatedRequest<Paginate, Region[]>(params => {
+  return unAuthRequest.get(config.phRegionEP, { params });
+});
 
 // ph-places - province
 export const phProvinceFn = apiPaginatedRequest<PaginateProvince, Province[]>(
-  params => unAuthRequest.get(API_URL.PH_PROVINCE, { params }),
+  params => {
+    return unAuthRequest.get(config.phProvinceEP, { params });
+  },
 );
 
 // ph-places - cities and municipalities
 export const phCitiesAndMunicipalitiesFn = apiPaginatedRequest<
   PaginateCityOrMunicipality,
   CityOrMunicipality[]
->(params => unAuthRequest.get(API_URL.PH_CITYORMUNICIPALITY, { params }));
+>(params => {
+  return unAuthRequest.get(config.phCityOrMunicipalityEP, { params });
+});

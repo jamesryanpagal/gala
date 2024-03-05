@@ -3,13 +3,13 @@ import { pattern } from "./pattern";
 import I18n from "../translation/translation";
 
 export const fullnameValidatonSchema = yup.object().shape({
-  firstName: yup
+  firstname: yup
     .string()
-    .matches(pattern.STR, I18n.t("invalidFnameLbl"))
+    .matches(pattern.STRWITHSPACES, I18n.t("invalidFnameLbl"))
     .required(I18n.t("requiredFieldLbl")),
-  lastName: yup
+  lastname: yup
     .string()
-    .matches(pattern.STR, I18n.t("invalidLnameLbl"))
+    .matches(pattern.STRWITHSPACES, I18n.t("invalidLnameLbl"))
     .required(I18n.t("requiredFieldLbl")),
 });
 
@@ -23,8 +23,8 @@ export const birthdateGenderValidationSchema = yup.object().shape({
 export const addressContactInformationValidationSchema = yup.object().shape({
   region: yup.string().required(I18n.t("requiredFieldLbl")),
   province: yup.string(),
-  cityOrMunicipality: yup.string().required(I18n.t("requiredFieldLbl")),
-  contactNum: yup
+  cityormunicipality: yup.string().required(I18n.t("requiredFieldLbl")),
+  cellphonenum: yup
     .string()
     .matches(pattern.CONTACT, I18n.t("invalidContactNumLbl"))
     .required(I18n.t("requiredFieldLbl")),

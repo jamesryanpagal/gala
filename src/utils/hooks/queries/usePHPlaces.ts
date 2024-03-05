@@ -18,7 +18,7 @@ export const useRegion = (
   request?: Paginate,
   options?: InfiniteQueryOptions<ResponseInfinite<Region[]>>,
 ) => {
-  const { size, search, page } = request || {};
+  const { size, search, page, initialCode } = request || {};
   return useInfiniteQuery({
     ...options,
     queryKey: ["region", request],
@@ -27,6 +27,7 @@ export const useRegion = (
         page: pageParam,
         size: size || DEFUALTS.pageSize,
         search: search || "",
+        initialCode: initialCode || "",
       });
     },
     getNextPageParam,
@@ -38,7 +39,7 @@ export const useProvince = (
   request?: PaginateProvince,
   options?: InfiniteQueryOptions<ResponseInfinite<Province[]>>,
 ) => {
-  const { size, search, page, regionCode } = request || {};
+  const { size, search, page, regionCode, initialCode } = request || {};
 
   return useInfiniteQuery({
     ...options,
@@ -49,6 +50,7 @@ export const useProvince = (
         size: size || DEFUALTS.pageSize,
         search: search || "",
         regionCode: regionCode || "",
+        initialCode: initialCode || "",
       });
     },
     getNextPageParam,
@@ -60,7 +62,8 @@ export const useCityOrMunicipality = (
   request?: PaginateCityOrMunicipality,
   options?: InfiniteQueryOptions<ResponseInfinite<CityOrMunicipality[]>>,
 ) => {
-  const { size, search, page, regionCode, provinceCode } = request || {};
+  const { size, search, page, regionCode, provinceCode, initialCode } =
+    request || {};
   return useInfiniteQuery({
     ...options,
     queryKey: ["cityormunicipality", request],
@@ -71,6 +74,7 @@ export const useCityOrMunicipality = (
         search: search || "",
         regionCode: regionCode || "",
         provinceCode: provinceCode || "",
+        initialCode: initialCode || "",
       });
     },
     getNextPageParam,

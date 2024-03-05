@@ -157,16 +157,19 @@ export const image = ({
   medium,
   large,
   xl,
+  size: customSize,
 }: Pick<ImageProps, "resizeMode"> & IconSizeProps) => {
-  const size = small
-    ? ICON_SIZES.iconS
-    : medium
-    ? ICON_SIZES.iconM
-    : large
-    ? ICON_SIZES.iconL
-    : xl
-    ? ICON_SIZES.iconXL
-    : ICON_SIZES.iconS;
+  const size =
+    customSize ||
+    (small
+      ? ICON_SIZES.iconS
+      : medium
+      ? ICON_SIZES.iconM
+      : large
+      ? ICON_SIZES.iconL
+      : xl
+      ? ICON_SIZES.iconXL
+      : ICON_SIZES.iconS);
   return StyleSheet.create({
     img: {
       height: "100%",
@@ -213,23 +216,34 @@ export const input = ({ error, disabled }: Partial<InputProps>) =>
     },
   });
 
-export const form = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "space-between",
-  },
-  inputGroup: {},
-  actionContainer: {
-    flexDirection: "row",
-    columnGap: 5,
-  },
-  invalidContainer: {
-    marginBottom: 20,
-  },
-  formHeaderContainer: {
-    marginBottom: 10,
-  },
-});
+export type FormStyleProps = {
+  stickFooter?: boolean;
+};
+
+export const form = ({ stickFooter }: FormStyleProps) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "space-between",
+    },
+    inputGroup: {},
+    actionContainer: {
+      flexDirection: "row",
+      columnGap: 5,
+      ...(stickFooter && {
+        position: "absolute",
+        bottom: SPACING.savPaddingV,
+        left: SPACING.savPaddingH,
+        right: SPACING.savPaddingH,
+      }),
+    },
+    invalidContainer: {
+      marginBottom: 20,
+    },
+    formHeaderContainer: {
+      marginBottom: 10,
+    },
+  });
 
 export const modal = ({ dark, transparent }: ModalStyleProps) =>
   StyleSheet.create({
@@ -411,5 +425,22 @@ export const emptyList = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: SPACING.defaultPadding,
+  },
+});
+
+export const onBoardedHeader = StyleSheet.create({
+  container: {
+    height: 70,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingLeft: 7,
+    paddingRight: 16,
+    backgroundColor: COLORS.white,
+  },
+  logoContainer: {},
+  headerTabContainer: {
+    flexDirection: "row",
+    columnGap: 20,
   },
 });

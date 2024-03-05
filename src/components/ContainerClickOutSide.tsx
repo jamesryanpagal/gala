@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from "react";
-import { View, Keyboard, ViewStyle, ViewProps } from "react-native";
+import { View, Keyboard, ViewProps } from "react-native";
 import { useClickOutside } from "react-native-click-outside";
 import { clickOutSide } from "../styles/components-styles/components.style";
 

@@ -23,6 +23,24 @@ import joinJourneyImage from "./images/signup-getstarted-img.png";
 // components
 import emptyDataIcon from "./icons/empty-icon-sm.png";
 
+// tabs
+import homeEnableIcon from "./icons/tabs/home-enable-icon.png";
+import mapEnableIcon from "./icons/tabs/map-enable-icon.png";
+import routesEnableIcon from "./icons/tabs/routes-enable-icon.png";
+import accommodationEnableIcon from "./icons/tabs/accommodation-enable-icon.png";
+import serviceEnableIcon from "./icons/tabs/service-enable-icon.png";
+import homeDisableIcon from "./icons/tabs/home-disable-icon.png";
+import mapDisableIcon from "./icons/tabs/map-disable-icon.png";
+import routesDisableIcon from "./icons/tabs/routes-disable-icon.png";
+import accommodationDisableIcon from "./icons/tabs/accommodation-disable-icon.png";
+import serviceDisableIcon from "./icons/tabs/service-disable-icon.png";
+import profileIcon from "./icons/tabs/profile-icon.png";
+import messageIcon from "./icons/tabs/message-icon.png";
+import notifIcon from "./icons/tabs/notif-icon.png";
+
+// logo
+import appLogo from "./logo/gala-logo.png";
+
 export {
   appLogoFull,
   appIconSm,
@@ -39,4 +57,18 @@ export {
   dropdownMinimizeIcon,
   joinJourneyImage,
   emptyDataIcon,
+  homeEnableIcon,
+  mapEnableIcon,
+  routesEnableIcon,
+  accommodationEnableIcon,
+  serviceEnableIcon,
+  homeDisableIcon,
+  mapDisableIcon,
+  routesDisableIcon,
+  accommodationDisableIcon,
+  serviceDisableIcon,
+  appLogo,
+  profileIcon,
+  messageIcon,
+  notifIcon,
 };

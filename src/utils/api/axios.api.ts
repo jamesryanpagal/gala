@@ -32,8 +32,8 @@ export const apiRequest =
   <T, R>(req: ApiRequest<T, R>) =>
   async (params?: T): ApiResponse<R> => {
     try {
-      const { message, statusCode, response } = (await req(params))
-        .data as Response<R>;
+      const res = await req(params);
+      const { message, statusCode, response } = res.data as Response<R>;
 
       return {
         message,
@@ -60,5 +60,32 @@ export const apiRequest =
 export const apiPaginatedRequest =
   <T, R>(req: ApiRequest<T, R>) =>
   async (params?: T): ApiResponseInfinite<R> => {
-    return (await req(params)).data as ResponseInfinite<R>;
+    try {
+      const res = await req(params);
+      const { message, statusCode, response, pageTotal } =
+        res.data as ResponseInfinite<R>;
+
+      return {
+        message,
+        statusCode,
+        response,
+        pageTotal,
+      };
+    } catch (err: any) {
+      if (err.response) {
+        return {
+          statusCode: err.response.data.statusCode,
+          message: err.response.data.message,
+          response: null,
+          pageTotal: 0,
+        };
+      } else {
+        return {
+          statusCode: 500,
+          message: I18n.t("errNetworkErrorLbl"),
+          response: null,
+          pageTotal: 0,
+        };
+      }
+    }
   };
